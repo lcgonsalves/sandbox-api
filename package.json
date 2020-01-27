@@ -1,0 +1,29 @@
+{
+  "name": "sandbox-api",
+  "version": "0.0.1",
+  "description": "Lightweight Express API for my personal Web Sandbox projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lcgonsalves/sandbox-api.git"
+  },
+  "keywords": [
+    "sqlite",
+    "sql",
+    "node",
+    "express",
+    "api"
+  ],
+  "author": "Léo Gonsalves",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lcgonsalves/sandbox-api/issues"
+  },
+  "homepage": "https://github.com/lcgonsalves/sandbox-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
