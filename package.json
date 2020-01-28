@@ -4,7 +4,8 @@
   "description": "Lightweight Express API for my personal Web Sandbox projects.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/SandboxServer.js 9595 true"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,8 @@
   },
   "homepage": "https://github.com/lcgonsalves/sandbox-api#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "body-parser": "latest",
+    "express": "^4.17.1",
+    "sqlite3": "^4.1.1"
   }
 }
