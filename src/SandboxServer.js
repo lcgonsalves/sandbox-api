@@ -37,13 +37,21 @@ app.get("/", (req, res) => {
 // insert new user
 app.post("/tm/users", (req, res) => {
 
+    res.append("Content-Type", "application/json");
+
+    if (!req.body) {
+        res.status(400).send({
+            "status": "failure",
+            "errorCode": 400,
+            "details": "No request body passed."
+        })
+    }
+
     const {
         spotifyID,
         displayName,
         imageUrl
     } = req.body;
-
-    res.append("Content-Type", "application/json");
 
     db.insertUser(spotifyID, displayName, imageUrl)
         .then((response) => {
@@ -79,14 +87,22 @@ app.get("/tm/user/:id", (req, res) => {
 // insert new session
 app.post("/tm/sessions", (req, res) => {
 
+    res.append("Content-Type", "application/json");
+
+    if (!req.body) {
+        res.status(400).send({
+            "status": "failure",
+            "errorCode": 400,
+            "details": "No request body passed."
+        })
+    }
+
     const {
         score,
         songID,
         userID,
         gameVersion
     } = req.body;
-
-    res.append("Content-Type", "application/json");
 
     db.insertSession(score, songID, userID, gameVersion)
         .then((response) => {
@@ -141,9 +157,17 @@ app.get("/tm/session/:sessionID", (req, res) => {
 // insert inputs
 app.post("/tm/inputs", (req, res) => {
 
-    const { inputs } = req.body;
-
     res.append("Content-Type", "application/json");
+
+    if (!req.body) {
+        res.status(400).send({
+            "status": "failure",
+            "errorCode": 400,
+            "details": "No request body passed."
+        })
+    }
+
+    const { inputs } = req.body;
 
     db.insertInputs(inputs)
         .then((response) => {
@@ -179,6 +203,16 @@ app.get("/tm/user/:userID/sessions", (req, res) => {
 // leaderboard
 app.get("/tm/leaderboard/:userID?", (req, res) => {
 
+    res.append("Content-Type", "application/json");
+
+    if (!req.body) {
+        res.status(400).send({
+            "status": "failure",
+            "errorCode": 400,
+            "details": "No request body passed."
+        })
+    }
+
     // optional parameter to limit the number of results
     const {
         maxResults
@@ -188,9 +222,7 @@ app.get("/tm/leaderboard/:userID?", (req, res) => {
     const {
         userID
     } = req.params;
-
-    res.append("Content-Type", "application/json");
-
+    
     db.fetchTopSessions(maxResults, userID)
         .then((response) => {
             log(response);
