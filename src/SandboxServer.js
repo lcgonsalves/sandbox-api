@@ -9,16 +9,12 @@ const express = require("express"),
     path = require("path"),
     bodyParser = require("body-parser"),
     TMDBUtility = require("./utils/TuneMountainDBUtility"),
-    port = (process.argv[2] || process.env.PORT || 9595);
+    port = 9595; // default to 9595
 
 // more descriptive logger function
 const log = response => console.log({ "timestamp": new Date(), ...response });
 
-let db;
-
-if (process.argv[3]) {
-    db = new TMDBUtility();
-}
+let db = new TMDBUtility(); // default to TMDB
 
 const app = express();
 app.use(express.static(path.join(__dirname, "../static")));
