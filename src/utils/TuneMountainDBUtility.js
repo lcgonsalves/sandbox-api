@@ -365,7 +365,7 @@ class TuneMountainDBUtility {
                 // execute query with spotifyID
                 this.db.all(
                     queries.selectTopSessionsFromUserWithID,
-                    { "$userID": spotifyID, "$maxResults": maxResults },
+                    { "$userID": spotifyID, "$maxResults": maxResults > 20 ? 20 : maxResults },
                     (error, rows) => {
                         if (error) reject({
                             "status": "failure retrieving sessions from user",
@@ -383,7 +383,7 @@ class TuneMountainDBUtility {
                 // execute query without spotify ID
                 this.db.all(
                     queries.selectTopSessions,
-                    {"$maxResults": maxResults },
+                    {"$maxResults": maxResults > 20 ? 20 : maxResults },
                     (error, rows) => {
                         if (error) reject({
                             "status": "failure retrieving sessions",

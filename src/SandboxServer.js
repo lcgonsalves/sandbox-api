@@ -65,25 +65,6 @@ app.post("/tm/users", (req, res) => {
 
 });
 
-// get user by ID
-app.get("/tm/user/:id", (req, res) => {
-
-    const {id} = req.params;
-
-    res.append("Content-Type", "application/json");
-
-    db.fetchUserWithID(id)
-        .then((response) => {
-            log(response);
-            res.status(200).send(response);
-        })
-        .catch((err) => {
-            log(err);
-            res.status(400).send(err);
-        });
-
-});
-
 // insert new session
 app.post("/tm/sessions", (req, res) => {
 
@@ -105,6 +86,52 @@ app.post("/tm/sessions", (req, res) => {
     } = req.body;
 
     db.insertSession(score, songID, userID, gameVersion)
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+
+});
+
+// insert inputs
+app.post("/tm/inputs", (req, res) => {
+
+    res.append("Content-Type", "application/json");
+
+    if (!req.body) {
+        res.status(400).send({
+            "status": "failure",
+            "errorCode": 400,
+            "details": "No request body passed."
+        })
+    }
+
+    const { inputs } = req.body;
+
+    db.insertInputs(inputs)
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+
+});
+
+// get user by ID
+app.get("/tm/user/:id", (req, res) => {
+
+    const {id} = req.params;
+
+    res.append("Content-Type", "application/json");
+
+    db.fetchUserWithID(id)
         .then((response) => {
             log(response);
             res.status(200).send(response);
@@ -143,33 +170,6 @@ app.get("/tm/session/:sessionID", (req, res) => {
     res.append("Content-Type", "application/json");
 
     db.fetchSessionWithID(parseInt(sessionID))
-        .then((response) => {
-            log(response);
-            res.status(200).send(response);
-        })
-        .catch((err) => {
-            log(err);
-            res.status(400).send(err);
-        });
-
-});
-
-// insert inputs
-app.post("/tm/inputs", (req, res) => {
-
-    res.append("Content-Type", "application/json");
-
-    if (!req.body) {
-        res.status(400).send({
-            "status": "failure",
-            "errorCode": 400,
-            "details": "No request body passed."
-        })
-    }
-
-    const { inputs } = req.body;
-
-    db.insertInputs(inputs)
         .then((response) => {
             log(response);
             res.status(200).send(response);
@@ -222,7 +222,7 @@ app.get("/tm/leaderboard/:userID?", (req, res) => {
     const {
         userID
     } = req.params;
-    
+
     db.fetchTopSessions(maxResults, userID)
         .then((response) => {
             log(response);
