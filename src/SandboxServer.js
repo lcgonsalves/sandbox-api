@@ -100,6 +100,64 @@ app.post("/tm/sessions", (req, res) => {
 
 });
 
+// fetch session info
+app.get("/tm/session/:sessionID/info", (req, res) => {
+
+    const { sessionID } = req.params;
+
+    res.append("Content-Type", "application/json");
+
+    db.fetchSessionInfoWithID(parseInt(sessionID))
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+
+});
+
+// fetch complete session
+app.get("/tm/session/:sessionID", (req, res) => {
+
+    const { sessionID } = req.params;
+
+    res.append("Content-Type", "application/json");
+
+    db.fetchSessionWithID(parseInt(sessionID))
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+
+});
+
+// insert inputs
+app.post("/tm/inputs", (req, res) => {
+
+    const { inputs } = req.body;
+    console.log(inputs);
+
+    res.append("Content-Type", "application/json");
+
+    db.insertInputs(inputs)
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+
+});
+
 // get all sessions belonging to user
 app.get("/tm/user/:userID/sessions", (req, res) => {
 

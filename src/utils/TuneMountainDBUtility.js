@@ -120,9 +120,9 @@ class TuneMountainDBUtility {
                         "details": errorDescriptions.NONE_FOUND
                     });
                     else resolve({
-                        "status": "success",
-                        "user": {...row}
-                    });
+                            "status": "success",
+                            "user": {...row}
+                        });
                 }
             );
 
@@ -200,7 +200,48 @@ class TuneMountainDBUtility {
 
     }
 
-    // todo: get session with sessionID
+    /**
+     * Fetches session information referring to a given ID;
+     *
+     * @param {Number} sessionID an integer identifier for the session
+     * @returns {Promise<Object>}
+     */
+    fetchSessionInfoWithID(sessionID) {
+
+        const handler = (resolve, reject) => {
+
+            // type check all inputs
+            if (
+                typeof sessionID !== "number"
+            ) reject(TYPE_MISMATCH_ERROR);
+
+            // execute query
+            this.db.get(
+                queries.selectSessionWithID,
+                { "$sessionID": sessionID },
+                (error, row) => {
+                    if (error) reject({
+                        "status": "failure",
+                        "errorCode": error.errno,
+                        "details": errorDescriptions[error.code]
+                    });
+                    else if (!row) reject({
+                        "status": "failure",
+                        "errorCode": 1,
+                        "details": errorDescriptions.NONE_FOUND
+                    });
+                    else resolve({
+                            "status": "success",
+                            "sessionInfo": {...row}
+                        });
+                }
+            );
+
+        };
+
+        return new Promise(handler);
+
+    }
 
     /**
      * Retrieves all game sessions belonging to user
@@ -242,7 +283,113 @@ class TuneMountainDBUtility {
 
     }
 
-    // todo: add array of inputs
+    /**
+     * Retrieves session info and an array of all inputs
+     * related to that session.
+     *
+     * @param {Number} sessionID an integer identifier for the session
+     * @returns {Promise<Object>} promise that resolves to an object containing the
+     * session or rejects with an error if no sessions are found.
+     */
+    fetchSessionWithID(sessionID) {
+
+        const handler = (resolve, reject) => {
+
+            // type check all inputs
+            if (
+                typeof sessionID !== "number"
+            ) reject(TYPE_MISMATCH_ERROR);
+
+            // execute query
+            this.db.get(
+                queries.selectSessionWithID,
+                { "$sessionID": sessionID },
+                (error, row) => {
+                    if (error) reject({
+                        "status": "failure",
+                        "errorCode": error.errno,
+                        "details": errorDescriptions[error.code]
+                    });
+                    else if (!row) reject({
+                        "status": "failure fetching session info",
+                        "errorCode": 1,
+                        "details": errorDescriptions.NONE_FOUND
+                    });
+                    else {
+                        // for clarity
+                        const session = row;
+
+                        this.db.all(
+                            queries.selectAllInputsFromSessionWIthID,
+                            { "$sessionID": sessionID },
+                            (error, rows) => {
+                                if (error) reject({
+                                    "status": "failure",
+                                    "errorCode": error.errno,
+                                    "details": errorDescriptions[error.code]
+                                });
+                                else resolve({
+                                        "status": "success",
+                                        "sessionInfo": {...session},
+                                        "inputs": rows
+                                    });
+                            }
+                        );
+                    }
+                }
+            );
+
+        };
+
+        return new Promise(handler);
+
+    }
+
+    /**
+     * Inserts an array of inputs into a database
+     *
+     * @param {Array} inputArray array of inputs
+     * @returns {Promise<Object>} promise that resolves into an object containing all inputs and session id or error.
+     */
+    insertInputs(inputArray) {
+
+        const handler = (resolve, reject) => {
+
+            // execute query
+            try {
+                this.db.run(
+                    queries.insertArrayOfInputs(inputArray),
+                    [],
+                    error => {
+                        if (error) reject({
+                            "status": "failure inserting inputs",
+                            "errorCode": error.errno,
+                            "details": errorDescriptions[error.code]
+                        });
+                        else {
+                            resolve({
+                                "status": "success",
+                                "sessionID": inputArray[0].sessionID,
+                                "inputsAdded": inputArray
+                            })
+                        }
+                    }
+                );
+            } catch (e) {
+
+                // for cases where it's not an array since type checking is being weird
+                reject({
+                    "status": "failure",
+                    "errorCode": e.name
+                })
+
+            }
+
+        };
+
+        return new Promise(handler);
+
+    }
 
     // todo: get all inputs associated with a sessionID
 
