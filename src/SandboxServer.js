@@ -142,7 +142,6 @@ app.get("/tm/session/:sessionID", (req, res) => {
 app.post("/tm/inputs", (req, res) => {
 
     const { inputs } = req.body;
-    console.log(inputs);
 
     res.append("Content-Type", "application/json");
 
@@ -166,6 +165,33 @@ app.get("/tm/user/:userID/sessions", (req, res) => {
     res.append("Content-Type", "application/json");
 
     db.fetchSessionsFromUser(userID)
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+
+});
+
+// leaderboard
+app.get("/tm/leaderboard/:userID?", (req, res) => {
+
+    // optional parameter to limit the number of results
+    const {
+        maxResults
+    } = req.body;
+
+    // optional parameter to filter by user
+    const {
+        userID
+    } = req.params;
+
+    res.append("Content-Type", "application/json");
+
+    db.fetchTopSessions(maxResults, userID)
         .then((response) => {
             log(response);
             res.status(200).send(response);

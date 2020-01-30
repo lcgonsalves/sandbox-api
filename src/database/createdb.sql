@@ -1,0 +1,22 @@
+CREATE TABLE users (
+spotifyID TEXT PRIMARY KEY,
+displayName TEXT NOT NULL,
+imageUrl TEXT
+);
+
+CREATE TABLE sessions (
+sessionID INTEGER PRIMARY KEY AUTOINCREMENT,
+userID TEXT NOT NULL,
+score INTEGER NOT NULL,
+songID TEXT NOT NULL,
+gameVersion TEXT NOT NULL,
+FOREIGN KEY (userID) REFERENCES users(spotifyID)
+);
+
+CREATE TABLE inputs (
+sessionID INTEGER NOT NULL,
+action TEXT NOT NULL,
+timestamp TEXT NOT NULL,
+type TEXT NOT NULL,
+FOREIGN KEY (sessionID) REFERENCES sessions(sessionID)
+);

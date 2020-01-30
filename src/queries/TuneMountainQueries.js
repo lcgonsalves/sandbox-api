@@ -12,19 +12,32 @@ queries.selectSessionWithID =
 queries.selectAllInputsFromSessionWIthID =
     `SELECT * FROM inputs WHERE inputs.sessionID = $sessionID`;
 
+queries.selectTopSessionsFromUserWithID =
+    `SELECT * FROM sessions WHERE sessions.userID = $userID ORDER BY score DESC LIMIT $maxResults;`;
+queries.selectTopSessions =
+    `SELECT * FROM sessions ORDER BY score DESC LIMIT $maxResults;`;
+
 queries.insertArrayOfInputs = (inputs) => {
 
     const arr = inputs.map(input => {
         const {
             sessionID,
             action,
-            timestamp
+            timestamp,
+            type
         } = input;
 
-        return `(${sessionID}, '${action}', '${timestamp}')`;
+        if (
+            typeof sessionID !== "number" ||
+            typeof  action !== "string" ||
+            typeof timestamp !== "string" ||
+            typeof type !== "string"
+        ) throw new TypeError("Invalid type");
+
+        return `(${sessionID}, '${action}', '${timestamp}', '${type}')`;
     });
 
-    return `INSERT INTO inputs(sessionID, action, timestamp)
+    return `INSERT INTO inputs(sessionID, action, timestamp, type)
     VALUES ${arr};`;
 };
 

@@ -149,7 +149,7 @@ class TuneMountainDBUtility {
 
             // type check all inputs
             if (
-                typeof score !== "string" ||
+                typeof score !== "number" ||
                 typeof songID !== "string" ||
                 typeof userID !== "string" ||
                 typeof gameVersion !== "string"
@@ -346,6 +346,65 @@ class TuneMountainDBUtility {
     }
 
     /**
+     *
+     * @param maxResults
+     * @param spotifyID
+     * @returns {Promise<unknown>}
+     */
+    fetchTopSessions(maxResults = 10, spotifyID) {
+
+        const handler = (resolve, reject) => {
+
+            // type check all inputs and existance of spotifyID
+            if (
+                typeof maxResults !== "number" ||
+                (spotifyID && typeof spotifyID !== "string")
+            ) reject(TYPE_MISMATCH_ERROR);
+
+            if (spotifyID) {
+                // execute query with spotifyID
+                this.db.all(
+                    queries.selectTopSessionsFromUserWithID,
+                    { "$userID": spotifyID, "$maxResults": maxResults },
+                    (error, rows) => {
+                        if (error) reject({
+                            "status": "failure retrieving sessions from user",
+                            "errorCode": error.errno,
+                            "details": errorDescriptions[error.code]
+                        });
+                        else resolve({
+                            "status": "success",
+                            "userID": spotifyID,
+                            "sessions": rows
+                        });
+                    }
+                );
+            } else {
+                // execute query without spotify ID
+                this.db.all(
+                    queries.selectTopSessions,
+                    {"$maxResults": maxResults },
+                    (error, rows) => {
+                        if (error) reject({
+                            "status": "failure retrieving sessions",
+                            "errorCode": error.errno,
+                            "details": errorDescriptions[error.code]
+                        });
+                        else resolve({
+                            "status": "success",
+                            "userID": spotifyID,
+                            "sessions": rows
+                        });
+                    }
+                );
+            }
+        };
+
+        return new Promise(handler);
+
+    }
+
+    /**
      * Inserts an array of inputs into a database
      *
      * @param {Array} inputArray array of inputs
@@ -390,8 +449,6 @@ class TuneMountainDBUtility {
         return new Promise(handler);
 
     }
-
-    // todo: get all inputs associated with a sessionID
 
 }
 
