@@ -1,6 +1,7 @@
 // imports
-const sqlite3 = require("sqlite3");
+const sqlite3 = require("sqlite3").verbose();
 const queries = require("../queries/TuneMountainQueries");
+const demoQueries = require("../queries/DemoQueries");
 const errorDescriptions = require("../utils/SQLiteErrorTranslator");
 
 // defined constants
@@ -443,6 +444,47 @@ class TuneMountainDBUtility {
                 })
 
             }
+
+        };
+
+        return new Promise(handler);
+
+    }
+
+    // debug methods for displaying in website
+
+    /**
+     * Fetches all user profiles in the database;
+     *
+     * TODO: secure this with Access Token
+     *
+     * @returns {Promise<Object>}
+     */
+    demoFetchAll(category) {
+
+        const handler = (resolve, reject) => {
+
+                this.db.all(
+                    demoQueries.ALL(category),
+                    [],
+                    (error, rows) => {
+
+                        console.log(error, rows);
+
+                        if (error) reject({
+                            "status": `failure fetching ${category}`,
+                            "errorCode": error.errno,
+                            "details": errorDescriptions[error.code]
+                        });
+                        else {
+                            const output = {};
+                            output.status = "success";
+                            output[category] = rows;
+
+                            resolve(output);
+                        }
+                    }
+                );
 
         };
 

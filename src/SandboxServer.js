@@ -30,6 +30,26 @@ app.get("/", (req, res) => {
 
 });
 
+// demo endpoints for visualizer
+app.get("/tm/demo/:category", (req, res) => {
+
+    const { category } = req.params;
+
+    console.log(category);
+
+    res.append("Content-Type", "application/json");
+
+    db.demoFetchAll(category)
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+});
+
 // insert new user
 app.post("/tm/users", (req, res) => {
 
