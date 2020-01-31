@@ -94,7 +94,7 @@ On success, returns a JSON object containing:
 **Note** that sessions do not contain inputs; a separate request must be done to fetch all inputs belonging to a
  session. 
 
-On failure, see [on failure](#onfailure)
+On failure, see [on failure](#on-failure)
 
 ---
 #### `/session/:sesssionID`
@@ -132,7 +132,7 @@ On success, returns a JSON object containing
 
 All inputs belonging to this session will be returned in the array, which could be quite large.
 
-On failure, see [on failure](#onfailure)
+On failure, see [on failure](#on-failure)
 
 ---
 #### `/session/:sesssionID/info`
@@ -154,7 +154,7 @@ NOTE: This endpoint excludes inputs;
 
 All inputs belonging to this session will be returned in the array.
 
-On failure, see [on failure](#onfailure)
+On failure, see [on failure](#on-failure)
 
 ---
 #### `/leaderboard/:userID?`
@@ -191,7 +191,7 @@ On success, returns a JSON object containing
 
 All inputs belonging to sessions won't be returned in this request.
 
-On failure, see [on failure](#onfailure)
+On failure, see [on failure](#on-failure)
 
 ---
 
