@@ -20,7 +20,7 @@ let db = new sqlite3.Database(DB_LOCATION, sqlite3.OPEN_READWRITE, (err) => {
 });
 
 router.use(function(req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", "https://lcgonsalves.github.io/03-Experiment/"); // update to match the domain you will make the request from
+    res.setHeader("Access-Control-Allow-Origin", "https://lcgonsalves.github.io"); // update to match the domain you will make the request from
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
