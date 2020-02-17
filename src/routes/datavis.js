@@ -7,6 +7,10 @@ const errorDescriptions = require("../utils/SQLiteErrorTranslator");
 // initialize db
 const DB_LOCATION = './sql/datavis.db';
 const APP_NAME = 'Data Visualization Sandbox';
+const allowedOrigins = {
+    github: "https://lcgonsalves.github.io",
+    local: "http://localhost:8080"
+};
 
 let db = new sqlite3.Database(DB_LOCATION, sqlite3.OPEN_READWRITE, (err) => {
 
@@ -20,7 +24,13 @@ let db = new sqlite3.Database(DB_LOCATION, sqlite3.OPEN_READWRITE, (err) => {
 });
 
 router.use(function(req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", "https://lcgonsalves.github.io"); // update to match the domain you will make the request from
+    const origin = req.get("origin");
+
+    if (origin === allowedOrigins.local)
+        res.setHeader("Access-Control-Allow-Origin", allowedOrigins.local);
+    else if (origin === allowedOrigins.github) 
+        res.setHeader("Access-Control-Allow-Origin", allowedOrigins.github); // update to match the domain you will make the request from
+    
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
