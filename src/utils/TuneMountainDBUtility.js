@@ -476,11 +476,12 @@ class TuneMountainDBUtility {
             const containsANullField = () => {
 
                 Object.keys(encodedObj).forEach(key => {
-                    if (encodedObj[key] === null || encodedObj[key] === undefined)
-                        return false;
+                    if (key !== "q14" && encodedObj[key] === null || encodedObj[key] === undefined) {
+                        return true;
+                    }
                 });
 
-                return true;
+                return false;
 
             };
 
