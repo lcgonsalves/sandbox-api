@@ -58,6 +58,31 @@ router.post("/users", (req, res) => {
 
 });
 
+// insert new feedback response
+router.post("/submit-feedback", (req, res) => {
+
+    res.append("Content-Type", "application/json");
+
+    if (!req.body) {
+        res.status(400).send({
+            "status": "failure",
+            "errorCode": 400,
+            "details": "No request body passed."
+        })
+    }
+
+    db.insertFeedbackForm(req.body)
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+
+});
+
 // insert new session
 router.post("/sessions", (req, res) => {
 
@@ -125,6 +150,23 @@ router.get("/user/:id", (req, res) => {
     res.append("Content-Type", "application/json");
 
     db.fetchUserWithID(id)
+        .then((response) => {
+            log(response);
+            res.status(200).send(response);
+        })
+        .catch((err) => {
+            log(err);
+            res.status(400).send(err);
+        });
+
+});
+
+// get all feedback form responses
+router.get("/feedback-responses", (req, res) => {
+
+    res.append("Content-Type", "application/json");
+
+    db.fetchAllFeedbackForms()
         .then((response) => {
             log(response);
             res.status(200).send(response);

@@ -44,7 +44,7 @@ if (token) {
                 clearDiv();
                 mainContainer.appendChild(generateInputTable(jsonObj.inputs))
             }
-            
+
         })
         .catch(err => mainText.innerHTML = err.message);
 

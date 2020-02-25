@@ -3,6 +3,7 @@ const sqlite3 = require("sqlite3").verbose();
 const queries = require("../queries/TuneMountainQueries");
 const demoQueries = require("../queries/DemoQueries");
 const errorDescriptions = require("../utils/SQLiteErrorTranslator");
+const {parse} = require("../utils/NestedJSONUtility");
 
 // defined constants
 const DB_LOCATION = './sql/tune-mountain.db';
@@ -451,7 +452,119 @@ class TuneMountainDBUtility {
 
     }
 
-    // debug methods for displaying in website
+    /**
+     * Inserts feedback form responses into the database.
+     *
+     * @param {Object} feedbackFormObject object containing song ID and responses to questions.
+     * @returns {Promise<Object>} resolves into object containing success or rejects into failure
+     */
+    insertFeedbackForm(feedbackFormObject) {
+
+        const handler = (resolve, reject) => {
+
+            if (!feedbackFormObject) reject({
+                "status": "failure",
+                "details": "feedback form object not passed"
+            });
+
+            const {
+                songID, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14
+            } = feedbackFormObject;
+
+            const containsANullField = () => {
+
+                Object.keys(feedbackFormObject).forEach(key => {
+                    if (feedbackFormObject[key] === null || feedbackFormObject[key] === undefined)
+                        return false;
+                });
+
+                return true;
+
+            };
+
+            // execute query
+            try {
+
+                this.db.run(
+                    queries.insertFeedbackForm,
+                    {
+                        $songID: songID,
+                        $q1: q1,
+                        $q2: q2,
+                        $q3: q3,
+                        $q4: q4,
+                        $q5: q5,
+                        $q6: q6,
+                        $q7: q7,
+                        $q8: q8,
+                        $q9: q9,
+                        $q10: q10,
+                        $q11: q11,
+                        $q12: q12,
+                        $q13: q13,
+                        $q14: q14
+                    },
+                    error => {
+                        if (error) reject({
+                            "status": "failure inserting inputs",
+                            "errorCode": error.errno,
+                            "details": errorDescriptions[error.code]
+                        });
+                        else {
+                            resolve({
+                                "status": "success"
+                            })
+                        }
+                    }
+                );
+            } catch (e) {
+
+                // for cases where it's not an array since type checking is being weird
+                reject({
+                    "status": "failure",
+                    "errorCode": e.name
+                })
+
+            }
+
+        };
+
+        return new Promise(handler);
+
+    }
+
+    /**
+     * Selects all feedback form responses
+     *
+     * @returns {Promise<Object>} promise that resolves into a status field and a body field containing the responses
+     */
+    fetchAllFeedbackForms() {
+
+        const handler = (resolve, reject) => {
+
+            this.db.all(
+                queries.selectFeedbackForms,
+                [],
+                (error, rows) => {
+                    if (error) reject({
+                        "status": "failure inserting inputs",
+                        "errorCode": error.errno,
+                        "details": errorDescriptions[error.code]
+                    });
+                    else {
+                        resolve({
+                            "status": "success",
+                            "body": rows ? rows.map(parse) : []
+                        })
+                    }
+                }
+            );
+
+        };
+
+        return new Promise(handler);
+
+    }
 
     /**
      * Fetches all user profiles in the database;

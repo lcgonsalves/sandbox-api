@@ -16,6 +16,9 @@ queries.selectTopSessionsFromUserWithID =
     `SELECT * FROM sessions WHERE sessions.userID = $userID ORDER BY score DESC LIMIT $maxResults;`;
 queries.selectTopSessions =
     `SELECT * FROM sessions ORDER BY score DESC LIMIT $maxResults;`;
+queries.insertFeedbackForm = "INSERT INTO feedbackFormResponses(songID, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14) VALUES ($songID, $q1, $q2, $q3, $q4, $q5, $q6, $q7, $q8, $q9, $q10, $q11, $q12, $q13, $q14);";
+
+queries.selectFeedbackForms = "SELECT * FROM feedbackFormResponses;";
 
 queries.insertArrayOfInputs = (inputs) => {
 

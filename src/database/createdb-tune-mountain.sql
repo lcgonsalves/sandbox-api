@@ -1,22 +1,44 @@
+--# user table
 CREATE TABLE users (
-spotifyID TEXT PRIMARY KEY,
-displayName TEXT NOT NULL,
-imageUrl TEXT
+	spotifyID TEXT PRIMARY KEY,
+	displayName TEXT NOT NULL,
+	imageUrl TEXT
 );
 
+--# session table
 CREATE TABLE sessions (
-sessionID INTEGER PRIMARY KEY AUTOINCREMENT,
-userID TEXT NOT NULL,
-score INTEGER NOT NULL,
-songID TEXT NOT NULL,
-gameVersion TEXT NOT NULL,
-FOREIGN KEY (userID) REFERENCES users(spotifyID)
+	sessionID INTEGER PRIMARY KEY AUTOINCREMENT,
+	userID TEXT NOT NULL,
+	score INTEGER NOT NULL,
+	songID TEXT NOT NULL,
+	gameVersion TEXT NOT NULL,
+	FOREIGN KEY (userID) REFERENCES users(spotifyID)
 );
 
+--# input table
 CREATE TABLE inputs (
-sessionID INTEGER NOT NULL,
-action TEXT NOT NULL,
-timestamp TEXT NOT NULL,
-type TEXT NOT NULL,
-FOREIGN KEY (sessionID) REFERENCES sessions(sessionID)
+	sessionID INTEGER NOT NULL,
+	action TEXT NOT NULL,
+	timestamp TEXT NOT NULL,
+	type TEXT NOT NULL,
+	FOREIGN KEY (sessionID) REFERENCES sessions(sessionID)
+);
+
+--# feedback form table
+CREATE TABLE feedbackFormResponses (
+	songID TEXT NOT NULL,
+	q1 TEXT NOT NULL,
+	q2 TEXT NOT NULL,
+	q3 INTEGER NOT NULL,
+	q4 INTEGER NOT NULL,
+	q5 INTEGER NOT NULL,
+	q6 INTEGER NOT NULL,
+	q7 INTEGER NOT NULL,
+	q8 INTEGER NOT NULL,
+	q9 INTEGER NOT NULL,
+	q10 TEXT NOT NULL,
+	q11 INTEGER NOT NULL,
+	q12 TEXT NOT NULL,
+	q13 INTEGER NOT NULL,
+	q14 TEXT
 );
