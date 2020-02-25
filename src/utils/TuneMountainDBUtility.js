@@ -3,7 +3,7 @@ const sqlite3 = require("sqlite3").verbose();
 const queries = require("../queries/TuneMountainQueries");
 const demoQueries = require("../queries/DemoQueries");
 const errorDescriptions = require("../utils/SQLiteErrorTranslator");
-const {parse} = require("../utils/NestedJSONUtility");
+const {parse, encode} = require("../utils/NestedJSONUtility");
 
 // defined constants
 const DB_LOCATION = './sql/tune-mountain.db';
@@ -455,32 +455,39 @@ class TuneMountainDBUtility {
     /**
      * Inserts feedback form responses into the database.
      *
-     * @param {Object} feedbackFormObject object containing song ID and responses to questions.
+     * @param {Object} feedbackFormObj object containing song ID and responses to questions.
      * @returns {Promise<Object>} resolves into object containing success or rejects into failure
      */
-    insertFeedbackForm(feedbackFormObject) {
+    insertFeedbackForm(feedbackFormObj) {
 
         const handler = (resolve, reject) => {
 
-            if (!feedbackFormObject) reject({
+            if (!feedbackFormObj) reject({
                 "status": "failure",
                 "details": "feedback form object not passed"
             });
 
+            const encodedObj = encode(feedbackFormObj);
+
             const {
                 songID, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14
-            } = feedbackFormObject;
+            } = encodedObj;
 
             const containsANullField = () => {
 
-                Object.keys(feedbackFormObject).forEach(key => {
-                    if (feedbackFormObject[key] === null || feedbackFormObject[key] === undefined)
+                Object.keys(encodedObj).forEach(key => {
+                    if (encodedObj[key] === null || encodedObj[key] === undefined)
                         return false;
                 });
 
                 return true;
 
             };
+
+            if (containsANullField()) reject({
+                "status": "failure",
+                "details": "one of the required fields was null"
+            });
 
             // execute query
             try {
@@ -513,7 +520,7 @@ class TuneMountainDBUtility {
                         else {
                             resolve({
                                 "status": "success"
-                            })
+                            });
                         }
                     }
                 );
