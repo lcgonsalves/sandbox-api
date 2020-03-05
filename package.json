@@ -26,6 +26,8 @@
   "homepage": "https://github.com/lcgonsalves/sandbox-api#readme",
   "dependencies": {
     "body-parser": "latest",
+    "cors": "^2.8.5",
+    "d3-array": "^2.4.0",
     "express": "^4.17.1",
     "sqlite3": "^4.1.1"
   }
