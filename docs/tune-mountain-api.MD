@@ -52,7 +52,7 @@ Body (JSON): {
 Fetches a user profile belonging to user with spotify ID == `userID`;
 
 On success, returns a JSON object containing: 
-```JSON
+```javascript
 {
   "status": "success",
   "user": {
