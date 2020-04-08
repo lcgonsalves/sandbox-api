@@ -42,3 +42,7 @@ CREATE TABLE feedbackFormResponses (
 	q13 INTEGER NOT NULL,
 	q14 TEXT
 );
+
+CREATE TABLE IRBNames (
+    name TEXT NOT NULL
+);

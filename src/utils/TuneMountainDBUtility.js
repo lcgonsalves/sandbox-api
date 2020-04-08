@@ -467,6 +467,7 @@ class TuneMountainDBUtility {
                 "details": "feedback form object not passed"
             });
 
+            // encoding: transforms nested objects into strings
             const encodedObj = encode(feedbackFormObj);
 
             const {
@@ -476,7 +477,7 @@ class TuneMountainDBUtility {
             const containsANullField = () => {
 
                 Object.keys(encodedObj).forEach(key => {
-                    if (key !== "q14" && encodedObj[key] === null || encodedObj[key] === undefined) {
+                    if (key !== "q14" && (encodedObj[key] === null || encodedObj[key] === undefined)) {
                         return true;
                     }
                 });
@@ -534,6 +535,44 @@ class TuneMountainDBUtility {
                 })
 
             }
+
+        };
+
+        return new Promise(handler);
+
+    }
+
+    /**
+     * Inserts a signature into the appropriate table.
+     * @param name
+     * @returns {Promise<unknown>}
+     */
+    insertIRBName(name) {
+
+        const handler = (resolve, reject) => {
+
+            if (!name) reject({
+                "status": "failure",
+                "details": "no name passed"
+            });
+
+            // execute query
+            this.db.run(
+                queries.insertFeedbackForm,
+                { $name: name },
+                error => {
+                    if (error) reject({
+                        "status": "failure inserting IRB Name",
+                        "errorCode": error.errno,
+                        "details": errorDescriptions[error.code]
+                    });
+                    else {
+                        resolve({
+                            "status": "success"
+                        });
+                    }
+                }
+            );
 
         };
 

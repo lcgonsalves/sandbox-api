@@ -63,7 +63,7 @@ router.post("/submit-feedback", (req, res) => {
 
     res.append("Content-Type", "application/json");
 
-    if (!req.body) {
+    if (!req.body || !req.body.name) {
         res.status(400).send({
             "status": "failure",
             "errorCode": 400,
@@ -71,8 +71,10 @@ router.post("/submit-feedback", (req, res) => {
         })
     }
 
-    db.insertFeedbackForm(req.body)
-        .then((response) => {
+    Promise.all([
+        db.insertFeedbackForm(req.body),
+        db.insertIRBName(req.body.name)
+    ]).then((response) => {
             log(response);
             res.status(200).send(response);
         })
