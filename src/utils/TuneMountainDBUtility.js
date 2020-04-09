@@ -142,8 +142,7 @@ class TuneMountainDBUtility {
      * @param {String} songID spotify song ID
      * @param {String} userID spotify user ID (must be foreign key in 'users')
      * @param {String} gameVersion a version this session was recorded in (must be current or it won't be replayable)
-     * @returns {Promise<Array<Object>>} a promise that resolves to an array of sessions pertaining to the user or
-     * an error.
+     * @returns {Promise<Array<Object>>} a promise that resolves to the session id or an error.
      */
     insertSession(score, songID, userID, gameVersion) {
 
@@ -166,7 +165,7 @@ class TuneMountainDBUtility {
                     "$userID": userID,
                     "$gameVersion": gameVersion
                 },
-                error => {
+                function(error) {
                     if (error) reject({
                         "status": "failure inserting session",
                         "errorCode": error.errno,
@@ -174,23 +173,12 @@ class TuneMountainDBUtility {
                     });
                     else {
 
-                        // fetch all sessions from this user
-                        this.db.all(
-                            queries.selectSessionOfUser,
-                            { "$userID": userID },
-                            (error, rows) => {
-                                if (error) reject({
-                                    "status": "failure retrieving sessions",
-                                    "errorCode": error.errno,
-                                    "details": errorDescriptions[error.code]
-                                });
-                                else resolve({
+                        // return last insert id
+                         resolve({
                                     "status": "success",
                                     "userID": userID,
-                                    "sessions": rows
-                                })
-                            }
-                        );
+                                    "lastSessionID": this.lastID
+                                });
 
                     }
                 }
@@ -558,7 +546,7 @@ class TuneMountainDBUtility {
 
             // execute query
             this.db.run(
-                queries.insertFeedbackForm,
+                queries.insertIRBName,
                 { $name: name },
                 error => {
                     if (error) reject({
