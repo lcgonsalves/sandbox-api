@@ -12,10 +12,11 @@ queries.selectSessionWithID =
 queries.selectAllInputsFromSessionWIthID =
     `SELECT * FROM inputs WHERE inputs.sessionID = $sessionID`;
 
+// todo: add version checking
 queries.selectTopSessionsFromUserWithID =
-    `SELECT * FROM sessions WHERE sessions.userID = $userID ORDER BY score DESC LIMIT $maxResults;`;
+    `SELECT * FROM sessions WHERE sessions.userID = $userID AND sessions.gameVersion = $gameVersion ORDER BY score DESC LIMIT $maxResults;`;
 queries.selectTopSessions =
-    `SELECT * FROM sessions ORDER BY score DESC LIMIT $maxResults;`;
+    `SELECT * FROM sessions WHERE sessions.gameVersion = $gameVersion ORDER BY score DESC LIMIT $maxResults;`;
 queries.insertFeedbackForm = "INSERT INTO feedbackFormResponses(songID, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14) VALUES ($songID, $q1, $q2, $q3, $q4, $q5, $q6, $q7, $q8, $q9, $q10, $q11, $q12, $q13, $q14);";
 
 queries.selectFeedbackForms = "SELECT * FROM feedbackFormResponses;";

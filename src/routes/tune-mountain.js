@@ -242,14 +242,6 @@ router.get("/leaderboard/:userID?", (req, res) => {
 
     res.append("Content-Type", "application/json");
 
-    if (!req.body) {
-        res.status(400).send({
-            "status": "failure",
-            "errorCode": 400,
-            "details": "No request body passed."
-        })
-    }
-
     // optional parameter to limit the number of results
     const {
         maxResults
@@ -260,7 +252,16 @@ router.get("/leaderboard/:userID?", (req, res) => {
         userID
     } = req.params;
 
-    db.fetchTopSessions(maxResults, userID)
+    // game version
+    const version = req.header('X-Game-Version');
+
+    if (!version) {
+        res.status(400).send({
+            "status": "failure",
+            "errorCode": 400,
+            "details": "Missing required version of the game."
+        })
+    } else db.fetchTopSessions(maxResults, userID, version)
         .then((response) => {
             log(response);
             res.status(200).send(response);

@@ -341,21 +341,28 @@ class TuneMountainDBUtility {
      * @param spotifyID
      * @returns {Promise<unknown>}
      */
-    fetchTopSessions(maxResults = 10, spotifyID) {
+    fetchTopSessions(maxResults = 10, spotifyID, gameVersion = "") {
+
+        // todo: check for version
 
         const handler = (resolve, reject) => {
 
             // type check all inputs and existance of spotifyID
             if (
                 typeof maxResults !== "number" ||
-                (spotifyID && typeof spotifyID !== "string")
+                (spotifyID && typeof spotifyID !== "string") ||
+                (gameVersion && typeof gameVersion !== "string")
             ) reject(TYPE_MISMATCH_ERROR);
 
             if (spotifyID) {
                 // execute query with spotifyID
                 this.db.all(
                     queries.selectTopSessionsFromUserWithID,
-                    { "$userID": spotifyID, "$maxResults": maxResults > 20 ? 20 : maxResults },
+                    {
+                        "$userID": spotifyID,
+                        "$maxResults": maxResults > 20 ? 20 : maxResults,
+                        "$gameVersion": gameVersion
+                    },
                     (error, rows) => {
                         if (error) reject({
                             "status": "failure retrieving sessions from user",
@@ -373,7 +380,10 @@ class TuneMountainDBUtility {
                 // execute query without spotify ID
                 this.db.all(
                     queries.selectTopSessions,
-                    {"$maxResults": maxResults > 20 ? 20 : maxResults },
+                    {
+                        "$maxResults": maxResults > 20 ? 20 : maxResults,
+                        "$gameVersion": gameVersion
+                    },
                     (error, rows) => {
                         if (error) reject({
                             "status": "failure retrieving sessions",
